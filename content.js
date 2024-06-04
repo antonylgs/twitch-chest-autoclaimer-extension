@@ -4,14 +4,16 @@ let observer;
 
 // Function which tries to click the "Claim Bonus" button if it is present
 function clickClaimBonusButtonIfPresent() {
-  const claimButton = document.querySelector('[aria-label="Claim Bonus"]');
+  const claimButton = document.querySelector(
+    ".ScCoreButtonSuccess-sc-ocjdkq-5"
+  );
   if (claimButton) {
     claimButton.click();
     console.log("[Twitch Bonus Chest Auto Claimer] Chest claimed!");
 
     if (claimingMethod == "observer") {
       setTimeout(() => {
-        setupObserver('[aria-label="Claim Bonus"]');
+        setupObserver(".ScCoreButtonSuccess-sc-ocjdkq-5");
       }, 5000);
     }
 
@@ -23,7 +25,7 @@ function clickClaimBonusButtonIfPresent() {
     console.log(
       "[Twitch Bonus Chest Auto Claimer] No chest found during the first observer load, starting the observer for bonus chest"
     );
-    setupObserver('[aria-label="Claim Bonus"]');
+    setupObserver(".ScCoreButtonSuccess-sc-ocjdkq-5");
   } else {
     console.log(
       "[Twitch Bonus Chest Auto Claimer] Bonus chest not found! Trying again in 30 seconds..."
@@ -34,13 +36,13 @@ function clickClaimBonusButtonIfPresent() {
 // Function to be executed when the target element is found
 function onElementPresent(targetSelector) {
   if (
-    targetSelector === '[data-test-selector="community-points-summary"]' &&
+    targetSelector === ".community-points-summary" &&
     firstCheckOnObserverMode
   ) {
     // On first page load a chest might be already available, so try to click it
     clickClaimBonusButtonIfPresent();
     firstCheckOnObserverMode = false;
-  } else if (targetSelector === '[aria-label="Claim Bonus"]') {
+  } else if (targetSelector === ".ScCoreButtonSuccess-sc-ocjdkq-5") {
     // If the target element is the bonus chest button, try to click it
     console.log(
       "[Twitch Bonus Chest Auto Claimer] Chest button found! Claiming the bonus chest..."
@@ -73,12 +75,10 @@ function setupObserver(targetSelector) {
 
     // Observe for changes inside the target node
     const config = { childList: true, subtree: true };
-    if (targetSelector === '[aria-label="Claim Bonus"]') {
+    if (targetSelector === ".ScCoreButtonSuccess-sc-ocjdkq-5") {
       // If the target element is the bonus chest button, only observe the parent node
       observer.observe(
-        document.querySelector(
-          '[data-test-selector="community-points-summary"]'
-        ),
+        document.querySelector(".community-points-summary"),
         config
       );
     } else {
@@ -94,7 +94,7 @@ function changeClaimingMethod(method) {
     console.log(
       "[Twitch Bonus Chest Auto Claimer] Twitch bonus chest claimer loaded! Looking for the parentNode..."
     );
-    setupObserver('[data-test-selector="community-points-summary"]');
+    setupObserver(".community-points-summary");
     clearInterval(intervalId);
     console.log("[Twitch Bonus Chest Auto Claimer] Interval cleared");
   } else if (method == "interval") {
