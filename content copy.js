@@ -2,18 +2,33 @@ let firstCheckOnObserverMode = false;
 let claimingMethod = "interval";
 let observer;
 
+// Parent container selector for the community points area
+const COMMUNITY_POINTS_CONTAINER = ".community-points-summary";
+
 // Function which tries to click the "Claim Bonus" button if it is present
 function clickClaimBonusButtonIfPresent() {
-  const claimButton = document.querySelector(
-    ".ScCoreButtonSuccess-sc-ocjdkq-5"
-  );
+  // Get the community points container
+  const container = document.querySelector(COMMUNITY_POINTS_CONTAINER);
+  if (!container) {
+    console.log("[Twitch Bonus Chest Auto Claimer] Community points container not found");
+    return;
+  }
+  
+  // Find all buttons within the container
+  const buttons = container.querySelectorAll('button');
+  
+  // If there are at least 2 buttons, click the second one (which is typically the claim button)
+  let claimButton = null;
+  if (buttons.length >= 2) {
+    claimButton = buttons[1]; // The second button is typically the claim button
+  }
   if (claimButton) {
     claimButton.click();
     console.log("[Twitch Bonus Chest Auto Claimer] Chest claimed!");
 
     if (claimingMethod == "observer") {
       setTimeout(() => {
-        setupObserver(".ScCoreButtonSuccess-sc-ocjdkq-5");
+        setupObserver(COMMUNITY_POINTS_CONTAINER);
       }, 5000);
     }
 
@@ -25,7 +40,7 @@ function clickClaimBonusButtonIfPresent() {
     console.log(
       "[Twitch Bonus Chest Auto Claimer] No chest found during the first observer load, starting the observer for bonus chest"
     );
-    setupObserver(".ScCoreButtonSuccess-sc-ocjdkq-5");
+    setupObserver(COMMUNITY_POINTS_CONTAINER);
   } else {
     console.log(
       "[Twitch Bonus Chest Auto Claimer] Bonus chest not found! Trying again in 30 seconds..."
@@ -42,7 +57,7 @@ function onElementPresent(targetSelector) {
     // On first page load a chest might be already available, so try to click it
     clickClaimBonusButtonIfPresent();
     firstCheckOnObserverMode = false;
-  } else if (targetSelector === ".ScCoreButtonSuccess-sc-ocjdkq-5") {
+  } else if (targetSelector === COMMUNITY_POINTS_CONTAINER) {
     // If the target element is the bonus chest button, try to click it
     console.log(
       "[Twitch Bonus Chest Auto Claimer] Chest button found! Claiming the bonus chest..."
@@ -74,13 +89,16 @@ function setupObserver(targetSelector) {
     });
 
     // Observe for changes inside the target node
-    const config = { childList: true, subtree: true };
-    if (targetSelector === ".ScCoreButtonSuccess-sc-ocjdkq-5") {
-      // If the target element is the bonus chest button, only observe the parent node
-      observer.observe(
-        document.querySelector(".community-points-summary"),
-        config
-      );
+    const config = { childList: true, subtree: true, attributes: true };
+    if (targetSelector === COMMUNITY_POINTS_CONTAINER) {
+      // If the target element is the community points container, observe it for changes
+      const container = document.querySelector(COMMUNITY_POINTS_CONTAINER);
+      if (container) {
+        observer.observe(container, config);
+      } else {
+        // If the community points container isn't found, observe the entire document
+        observer.observe(document, config);
+      }
     } else {
       // If the target element is the bonus chest parent node, observe the entire document
       observer.observe(document, config);
