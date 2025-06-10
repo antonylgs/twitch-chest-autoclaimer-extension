@@ -2,18 +2,19 @@ let firstCheckOnObserverMode = false;
 let claimingMethod = "interval";
 let observer;
 
+// CSS selector for the claim bonus button
+const CLAIM_BONUS_BUTTON_SELECTOR = ".ScCoreButton-sc-ocjdkq-0.cdqvHM";
+
 // Function which tries to click the "Claim Bonus" button if it is present
 function clickClaimBonusButtonIfPresent() {
-  const claimButton = document.querySelector(
-    ".ScCoreButtonSuccess-sc-ocjdkq-5"
-  );
+  const claimButton = document.querySelector(CLAIM_BONUS_BUTTON_SELECTOR);
   if (claimButton) {
     claimButton.click();
     console.log("[Twitch Bonus Chest Auto Claimer] Chest claimed!");
 
     if (claimingMethod == "observer") {
       setTimeout(() => {
-        setupObserver(".ScCoreButtonSuccess-sc-ocjdkq-5");
+        setupObserver(CLAIM_BONUS_BUTTON_SELECTOR);
       }, 5000);
     }
 
@@ -25,7 +26,7 @@ function clickClaimBonusButtonIfPresent() {
     console.log(
       "[Twitch Bonus Chest Auto Claimer] No chest found during the first observer load, starting the observer for bonus chest"
     );
-    setupObserver(".ScCoreButtonSuccess-sc-ocjdkq-5");
+    setupObserver(CLAIM_BONUS_BUTTON_SELECTOR);
   } else {
     console.log(
       "[Twitch Bonus Chest Auto Claimer] Bonus chest not found! Trying again in 30 seconds..."
@@ -42,7 +43,7 @@ function onElementPresent(targetSelector) {
     // On first page load a chest might be already available, so try to click it
     clickClaimBonusButtonIfPresent();
     firstCheckOnObserverMode = false;
-  } else if (targetSelector === ".ScCoreButtonSuccess-sc-ocjdkq-5") {
+  } else if (targetSelector === CLAIM_BONUS_BUTTON_SELECTOR) {
     // If the target element is the bonus chest button, try to click it
     console.log(
       "[Twitch Bonus Chest Auto Claimer] Chest button found! Claiming the bonus chest..."
@@ -75,7 +76,7 @@ function setupObserver(targetSelector) {
 
     // Observe for changes inside the target node
     const config = { childList: true, subtree: true };
-    if (targetSelector === ".ScCoreButtonSuccess-sc-ocjdkq-5") {
+    if (targetSelector === CLAIM_BONUS_BUTTON_SELECTOR) {
       // If the target element is the bonus chest button, only observe the parent node
       observer.observe(
         document.querySelector(".community-points-summary"),

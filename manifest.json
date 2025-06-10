@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Twitch Bonus Chest Auto Claimer",
-  "version": "1.4.1",
+  "version": "1.4.3",
   "description": "Automatically claim the bonus chest when watching a live on Twitch.tv",
   "host_permissions": ["https://www.twitch.tv/*"],
   "content_scripts": [

@@ -1,5 +1,5 @@
 function clickClaimBonusButtonIfPresent() {
-  const claimButton = document.querySelector(".hpBkMI");
+  const claimButton = document.querySelector(".ScCoreButton-sc-ocjdkq-0.cdqvHM");
   if (!claimButton) {
     return;
   }
